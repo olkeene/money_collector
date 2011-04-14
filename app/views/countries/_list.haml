@@ -1,0 +1,6 @@
+%table
+  %tr
+    %td{:style => 'font-weight:bold'} Countries
+  - for c in countries do
+    %tr
+      %td= link_to c.name, country_path(c.code)

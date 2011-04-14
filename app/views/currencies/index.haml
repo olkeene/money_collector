@@ -1,0 +1,38 @@
+- if params[:show_remained]
+  = link_to 'Show all', currencies_path
+- else
+  = link_to 'Show remained', currencies_path(:show_remained => true)
+
+%table#currencies
+  %tr
+    %td{:style => 'font-weight:bold'} Currency
+  - for hash in @data do
+    - next if hash[:currency_code].blank?
+    %tr
+      %td= hash[:currency]
+      %td.offers= offers_for_country(@countries, hash)
+      %td{:id => "cur_#{hash[:currency_code]}"}
+
+%style
+  :sass
+    .offers
+      cursor: pointer
+:javascript
+  $(document).ready(function(){
+    $('#currencies .offers').click(function(){
+      var to = $(this).next();
+      var code = to.attr('id').replace('cur_', '');
+
+      $.ajax({
+        url: '/currencies/' + code,
+        type: 'get',
+        dataType: "json",
+        success: function(r){
+          $.each(r.countries, function(index, c) {
+            to.append($('<a>').text(c.country).attr('href', '/countries/' + c.country_code));
+            to.append(' ');
+          })
+        }
+      });
+    })
+  });

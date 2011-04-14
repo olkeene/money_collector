@@ -1,0 +1,31 @@
+%table
+  %tr
+    %td.bold Bought Currencies
+    %td.bold At
+    %td.bold Notes
+  - for c in @country.country_currencies do
+    %tr
+      %td= c.visited_at
+      %td= c.currency_code
+      %td= c.notes
+
+= form_for :country, :html => {:method => 'put'} do |f|
+  Mark all currencies as bought
+  = f.radio_button :buy_all, true
+  UnMark All
+  = f.radio_button :buy_all, false
+  = f.submit 'update'
+
+%p.bold
+  Add Currency for this country
+= form_for :country_currency, :url => buy_currency_country_path(@country.code) do |f|
+  %p
+    Visited At(yyyy-mm-dd)
+    = f.text_field :visited_at, :size => 10
+  %p
+    Currency
+    = f.select :currency_code, @data.collect{|d| d[:country_code] == @country.code ? d[:currency_code] : nil }.compact
+  %p
+    = f.text_area :notes, :rows => 2
+  %p
+    = f.submit 'update'
